@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     "line_items[0][price_data][unit_amount]": "1900",
     "line_items[0][price_data][product_data][name]": "Fantômes : audit complet",
     "metadata[produit]": "audit",
-    success_url: `${origine}/merci?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${origine}/avant-gout?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origine}/avant-gout?paiement=annule`,
   });
 
