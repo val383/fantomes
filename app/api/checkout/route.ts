@@ -2,7 +2,7 @@ export async function POST(req: Request) {
   const cle = process.env.STRIPE_SECRET_KEY;
   if (!cle) {
     return Response.json(
-      { erreur: "Le paiement n'est pas disponible pour le moment." },
+      { erreur: "Le paiement n'est pas disponible pour le moment. (Détail technique : clé absente)" },
       { status: 500 },
     );
   }
@@ -25,22 +25,24 @@ export async function POST(req: Request) {
     const reponse = await fetch("https://api.stripe.com/v1/checkout/sessions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${cle}`,
+        Authorization: `Bearer ${cle.trim()}`,
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: corps,
     });
     const donnees = await reponse.json();
     if (!reponse.ok || !donnees.url) {
+      const detail = donnees?.error?.message ?? "raison inconnue";
+      console.error("Stripe checkout :", detail);
       return Response.json(
-        { erreur: "Le paiement n'a pas pu démarrer. Réessaie dans un instant." },
+        { erreur: `Le paiement n'a pas pu démarrer. (Détail technique : ${detail})` },
         { status: 502 },
       );
     }
     return Response.json({ url: donnees.url });
   } catch {
     return Response.json(
-      { erreur: "Le paiement n'a pas pu démarrer. Réessaie dans un instant." },
+      { erreur: "Le paiement n'a pas pu démarrer. (Détail technique : connexion à Stripe impossible)" },
       { status: 502 },
     );
   }
