@@ -11,7 +11,6 @@ export async function POST(req: Request) {
   const corps = new URLSearchParams({
     mode: "payment",
     locale: "fr",
-    "payment_method_types[0]": "card",
     "line_items[0][quantity]": "1",
     "line_items[0][price_data][currency]": "eur",
     "line_items[0][price_data][unit_amount]": "1900",
